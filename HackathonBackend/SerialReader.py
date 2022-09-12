@@ -8,4 +8,8 @@ time.sleep(2)
 
 def Temperature_check():
     line = (ser.readline().decode("utf-8"))[:4]
-    return float(line)
+    try:
+        float(line)
+        return(float(line))
+    except:
+        return 0

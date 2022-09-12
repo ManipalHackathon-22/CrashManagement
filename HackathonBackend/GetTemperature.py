@@ -1,21 +1,32 @@
-from crypt import methods
 import json
+from sre_compile import isstring
 from flask import Flask
 from flask import request, jsonify
-#import SerialReader
+from flask_cors import CORS, cross_origin
+import SerialReader
 import DbConn
 
 app = Flask(__name__)
+cors = CORS(app)
+cors = CORS(app, resources={
+    r"/*": {
+        "origins" : "*"
+    }
+})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
+@app.route('/temp', methods=['GET'])
+def Temperature_alert():
+    temperature = SerialReader.Temperature_check()
 
-# @app.route('/', methods=['GET'])
-# def Temperature_alert():
-#     temperature = SerialReader.Temperature_check()
-#     if temperature > 26.5:
-#         return jsonify({'message' : 'HIGH!'})
-#     else:
-#         return jsonify({'message' : 'LOW'})
+    if temperature > 26.5:
+        return 'HIGH!'
+    else:
+        return 'LOW'
 
+@app.route('/', methods = ['GET'])
+def hello():
+    return("hello")
 
 
 @app.route('/crashInfo', methods=['POST'])
@@ -38,6 +49,6 @@ def get_crash_info():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=False, port = "5000")
 
     
